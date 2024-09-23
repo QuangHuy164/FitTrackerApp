@@ -1,32 +1,45 @@
-import './App.css';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import List from "./component/card-list/list.component";
+import "./App.css";
+import SearchBar from "./component/search-bar/search-bar";
+import DropDown from "./component/drop-down-menu/drop-down-menu";
 
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-const PlayerDashboard = ({ playerId }) => {
-  const [playerData, setPlayerData] = useState(null);
+const App = () => {
+  const [player, setPlayer] = useState([]);
+  const [filteredPlayer, setFilteredPlayer] = useState([]);
 
   useEffect(() => {
-    const fetchPlayerData = async () => {
-      const response = await axios.get(`/api/player/${playerId}`);
-      setPlayerData(response.data);
-    };
-    fetchPlayerData();
-  }, [playerId]);
+    axios.get("https://fantasy.premierleague.com/api/fixtures/")
+      .then((response) => {setPlayer(response.data.data)
+      console.log(response)});
+  }, []);
 
-  if (!playerData) return <div>Loading...</div>;
+  useEffect(()=>{
+    setFilteredPlayer(player);
+  },[player])
+
+  const handleInputChange = (event) => {
+    const inputName = event.target.value.toLowerCase();
+    setFilteredPlayer(
+      player.filter(({displayName}) => displayName.toLowerCase().includes(inputName))
+    );
+  };
+
+  const sortByName = () => {
+    const sorted = filteredPlayer.sort();
+    console.log(sorted)
+  }
 
   return (
-    <div>
-      <h1>{playerData.name}</h1>
-      <p>Goals: {playerData.goals}</p>
-      <p>Minutes Played: {playerData.minutes}</p>
-      <p>Injury Status: {playerData.injury_status}</p>
-      <p>Heart Rate: {playerData.fitness.heartRate}</p>
-      <p>Calories Burned: {playerData.fitness.caloriesBurned}</p>
+    <div className="App">
+      <h1>Players</h1>
+      <SearchBar handleInputChange={handleInputChange}></SearchBar>
+      <DropDown sortByName={sortByName}></DropDown>
+      <List player={filteredPlayer} />
     </div>
   );
 };
 
-export default PlayerDashboard;
+export default App;
 
