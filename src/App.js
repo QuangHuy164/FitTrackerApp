@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import List from "./component/card-list/list.component";
+import List from "../src/components/list/list.components"
 import "./App.css";
-import SearchBar from "./component/search-bar/search-bar";
-import DropDown from "./component/drop-down-menu/drop-down-menu";
+import SearchBar from "../src/components/search-bar/search-bar"
+import DropDown from "./components/drop-down-menu/drop-down-menu"
 
 const App = () => {
   const [player, setPlayer] = useState([]);
   const [filteredPlayer, setFilteredPlayer] = useState([]);
 
   useEffect(() => {
-    axios.get("https://fantasy.premierleague.com/api/fixtures/")
+    axios.get("https://fantasy.premierleague.com/api/entry/{team-id}")
       .then((response) => {setPlayer(response.data.data)
       console.log(response)});
   }, []);
