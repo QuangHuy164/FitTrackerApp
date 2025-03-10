@@ -1,11 +1,16 @@
 import "./list.styles.css";
-import Card from "../player-card/player.card.components"
+import Card from "../player-card/player.card.components";
 
-const List = ({player}) => {
+const List = ({ players }) => {
+  // Add a null/undefined check for players
+  if (!players || players.length === 0) {
+    return <div>No players found</div>;  // Render a message if no players are available
+  }
+
   return (
     <div className="card-list">
-      {player.map((player) => {
-        return <Card player={player} key={player.uuid}/>;
+      {players.map((player) => {
+        return <Card player={player} key={player.id} />; // Use player.id or any unique identifier
       })}
     </div>
   );
